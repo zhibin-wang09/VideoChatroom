@@ -5,7 +5,13 @@ import { useEffect } from "react";
 
 function App() {
   useEffect(() => {
+        // connect to the server only when this component is mounted
         socket.connect();
+
+        // clean up: disconnect the socket to prevent duplicate event registration
+        return () => {
+          socket.disconnect();
+        }
     })
 
     function onStateChange(event){
