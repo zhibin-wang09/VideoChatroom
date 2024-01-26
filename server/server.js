@@ -14,8 +14,8 @@ io.on("connection", (socket) => {
     console.log(`user ${socket.id} connected`);
 
     //listen for state update
-    socket.on('state', (state) => {
-       io.emit('state', state); // broadcast to all user about state update
+    socket.on('state', (state,timeStamp) => {
+       io.emit('state', state,timeStamp); // broadcast to all user about state update
     })
 
     socket.on('disconnect', (arg) => {

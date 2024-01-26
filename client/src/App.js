@@ -13,7 +13,9 @@ function App() {
         let playerListener; // variable to store the event listener
     
         // Function to handle state changes received from the server
-        const handleStateChange = (state) => {
+        const handleStateChange = (state,timeStamp) => {
+            console.log(state,timeStamp);
+            if(timeStamp) player.seekTo(timeStamp)
             switch (state) {
                 case 1: // playing
                     player.playVideo();
@@ -44,18 +46,24 @@ function App() {
         setPlayer(event.target);
     }
 
+    function sync(){
+        socket.emit('state',player.getPlayerState(),player.getCurrentTime());
+    }
+
     function onStateChange(event){
         //access to the player object through event.target
         const state = event.target.getPlayerState();
+        const timeStamp = event.target.getCurrentTime();
+        console.log(state,timeStamp);
         //const timeStamp = event.target.getCurrentTime();
         
         // sending player status to the server
         switch (state) {
             case 1: // playing
-                socket.emit('state',1,);
+                socket.emit('state',1);
                 break;
             case 2: // paused
-                socket.emit('state',2,);
+                socket.emit('state',2);
                 break;
             default:
                 break;
@@ -65,7 +73,7 @@ function App() {
     <>
 
         <Navbar></Navbar>
-        <Video onStateChange={onStateChange} onReady={onReady}></Video>
+        <Video onStateChange={onStateChange} onReady={onReady} sync={sync}></Video>
     </> 
     );
 }
