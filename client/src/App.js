@@ -1,3 +1,4 @@
+import Chat from './Chat';
 import Navbar from "./Navbar";
 import Video from "./Video";
 import {socket} from './socket';
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react";
 
 function App() {
     const [player, setPlayer] = useState(null); // store  event.target(which is the object we need to control the video)
+    const [messages, setMessages] = useState([]);
 
     useEffect(() => {
         // connect to the server only when this component is mounted
@@ -14,7 +16,6 @@ function App() {
     
         // Function to handle state changes received from the server
         const handleStateChange = (state,timeStamp) => {
-            console.log(state,timeStamp);
             if(timeStamp) player.seekTo(timeStamp)
             switch (state) {
                 case 1: // playing
@@ -27,6 +28,7 @@ function App() {
                     break;
             }
         };
+
     
         if (player) {
             // If the player is ready, register the event listener
@@ -41,12 +43,25 @@ function App() {
             }
         };
     }, [player]); // re-run the effect when the player changes
+    
+    // installation of the message socket
+    useEffect(() => {
+
+        const addMessage = (message) => {
+            setMessages([...messages, message]);
+        }
+        
+        socket.on('message boardcast', addMessage);
+        return () => {
+            socket.off('message boardcast');
+        }
+    })
 
     function onReady(event){ // set up the player object when the video is loaded
         setPlayer(event.target);
     }
 
-    function sync(){
+    function sync(){ // activated when user press the sync button in Video component and send current video information to server
         socket.emit('state',player.getPlayerState(),player.getCurrentTime());
     }
 
@@ -69,11 +84,17 @@ function App() {
                 break;
         }
     } 
+
+    function messageSend(message){
+        socket.emit('message',message); // send the message
+    }
+
     return (
     <>
 
         <Navbar></Navbar>
         <Video onStateChange={onStateChange} onReady={onReady} sync={sync}></Video>
+        <Chat onSubmit={messageSend} messages={messages}></Chat>
     </> 
     );
 }
