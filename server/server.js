@@ -12,12 +12,14 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
     console.log(`user ${socket.id} connected`);
-
     //listen for state update
     socket.on('state', (state,timeStamp) => {
        io.emit('state', state,timeStamp); // broadcast to all user about state update
     })
 
+    socket.on('message', (message) => {
+        io.emit('message boardcast', message);
+    })
     socket.on('disconnect', (arg) => {
         console.log(`user ${socket.id} disconnected`);
     })
