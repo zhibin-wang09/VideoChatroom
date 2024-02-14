@@ -1,10 +1,9 @@
-import Chat from './Chat';
 import Navbar from "./Navbar";
 import Video from "./Video";
 import {socket} from './socket';
 import { useEffect, useState } from "react";
 
-function App() {
+function App({videoId,roomId}) {
     const [player, setPlayer] = useState(null); // store  event.target(which is the object we need to control the video)
     const [messages, setMessages] = useState([]);
 
@@ -27,6 +26,7 @@ function App() {
             if(timeStamp) player.seekTo(timeStamp)
             switch (state) {
                 case 1: // playing
+                console.log("play")
                     player.playVideo();
                     break;
                 case 2: // paused
@@ -82,10 +82,12 @@ function App() {
         
         // sending player status to the server
         switch (state) {
+            
             case 1: // playing
                 socket.emit('state',1);
                 break;
             case 2: // paused
+                console.log("Pause")
                 socket.emit('state',2);
                 break;
             default:
@@ -101,8 +103,7 @@ function App() {
     <>
 
         <Navbar></Navbar>
-        <Video onStateChange={onStateChange} onReady={onReady} sync={sync}></Video>
-        <Chat onSubmit={messageSend} messages={messages}></Chat>
+        <Video onStateChange={onStateChange} messages = {messages} onSubmit = {messageSend}onReady={onReady} sync={sync}></Video>
     </> 
     );
 }
