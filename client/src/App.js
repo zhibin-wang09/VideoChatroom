@@ -8,10 +8,18 @@ function App() {
     const [player, setPlayer] = useState(null); // store  event.target(which is the object we need to control the video)
     const [messages, setMessages] = useState([]);
 
+    // initialization of socket connection
+    useEffect(() => {
+        socket.connect();
+
+        return () => {
+            socket.disconnect();
+        }
+    })
+
+    // this hook initializes the player object that is returned byu youtube video to allow for video control
     useEffect(() => {
         // connect to the server only when this component is mounted
-        socket.connect();
-    
         let playerListener; // variable to store the event listener
     
         // Function to handle state changes received from the server
@@ -37,23 +45,23 @@ function App() {
     
         // clean up: disconnect the socket and remove the player listener
         return () => {
-            socket.disconnect();
+            //socket.disconnect();
             if (playerListener) {
                 playerListener.off('state', handleStateChange);
             }
         };
     }, [player]); // re-run the effect when the player changes
     
-    // installation of the message socket
+    // initialization of message event 
     useEffect(() => {
 
         const addMessage = (message) => {
             setMessages([...messages, message]);
         }
         
-        socket.on('message boardcast', addMessage);
+        socket.on('message', addMessage);
         return () => {
-            socket.off('message boardcast');
+            socket.off('message');
         }
     })
 

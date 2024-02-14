@@ -18,7 +18,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('message', (message) => {
-        io.emit('message boardcast', message);
+        io.emit('message', message);
     })
     socket.on('disconnect', (arg) => {
         console.log(`user ${socket.id} disconnected`);
