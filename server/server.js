@@ -14,12 +14,18 @@ io.on("connection", (socket) => {
     console.log(`user ${socket.id} connected`);
     //listen for state update
     socket.on('state', (state,timeStamp) => {
-       io.emit('state', state,timeStamp); // broadcast to all user about state update
+       io.in(socket.room).emit('state', state,timeStamp); // broadcast to all user about state update
+    })
+
+    socket.on('join', (roomId) => {
+        socket.room = roomId;
+        socket.join(roomId);
     })
 
     socket.on('message', (message) => {
-        io.emit('message', message);
+        io.in(socket.room).emit('message', message);
     })
+
     socket.on('disconnect', (arg) => {
         console.log(`user ${socket.id} disconnected`);
     })

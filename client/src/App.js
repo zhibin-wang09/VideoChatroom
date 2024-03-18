@@ -10,11 +10,11 @@ function App({videoId,roomId}) {
     // initialization of socket connection
     useEffect(() => {
         socket.connect();
-
+        socket.emit("join", roomId);
         return () => {
             socket.disconnect();
         }
-    },[])
+    },[roomId])
 
     // this hook initializes the player object that is returned byu youtube video to allow for video control
     useEffect(() => {
@@ -103,7 +103,7 @@ function App({videoId,roomId}) {
     <>
 
         <Navbar></Navbar>
-        <Video onStateChange={onStateChange} messages = {messages} onSubmit = {messageSend}onReady={onReady} sync={sync}></Video>
+        <Video onStateChange={onStateChange} messages = {messages} onSubmit = {messageSend}onReady={onReady} sync={sync} videoId = {videoId}></Video>
     </> 
     );
 }

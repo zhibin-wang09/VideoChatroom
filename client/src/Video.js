@@ -2,7 +2,7 @@ import { useState } from "react";
 import React from "react";
 import Youtube from "react-youtube";
 
-function Video({ onSubmit, messages, onStateChange, onReady, sync }) {
+function Video({ onSubmit, messages, onStateChange, onReady, sync, videoId }) {
   const [message, setMessage] = useState("");
 
   function submitHandler(e) {
@@ -13,7 +13,7 @@ function Video({ onSubmit, messages, onStateChange, onReady, sync }) {
     <div className="flex flex-row m-4 justify-center items-center">
       <div className="flex flex-col justify-center pt-8">
         <Youtube
-          videoId="WIRK_pGdIdA"
+          videoId = {videoId} //"WIRK_pGdIdA"
           onStateChange={onStateChange}
           onReady={onReady}
         ></Youtube>
