@@ -14,7 +14,7 @@ function App({videoId,roomId}) {
         return () => {
             socket.disconnect();
         }
-    })
+    },[])
 
     // this hook initializes the player object that is returned byu youtube video to allow for video control
     useEffect(() => {
